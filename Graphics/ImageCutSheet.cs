@@ -30,12 +30,15 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         public List<ImageCut> Cuts;
 
         //todo: Make this contructor add all the other files associated with the anims.
-        public ImageCutSheet(Image spriteSheet)
+        private ImageCutSheet(Image spriteSheet)
         {
             SpriteSheet = spriteSheet;
             Cuts = new List<ImageCut>();
         }
-
+        public static ImageCutSheet CreateImageCutSheet()
+        {
+            return new ImageCutSheet(new Bitmap(4, 4));
+        }
         public static ImageCutSheet FromFile(string path)
         {
             ImageCutSheet imgCutSheet = new ImageCutSheet(Image.FromFile(path + "/sprite.png"));

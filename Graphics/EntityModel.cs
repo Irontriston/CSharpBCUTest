@@ -74,11 +74,14 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         }
         public static EntityModel NewModel()
         {
-            return new EntityModel();
+            EntityModel model = new EntityModel();
+            model.SpriteSheet = ImageCutSheet.CreateImageCutSheet();
+            return model;
         }
         public static EntityModel FromFile(string Path)
         {
             EntityModel model = new EntityModel();
+            model.SpriteSheet = ImageCutSheet.FromFile(Path);
             using(StreamReader sr = new(Path+"/mamodel.txt"))
             {
                 //The original java code seems to do something similar regarding handling the first 3 lines,
