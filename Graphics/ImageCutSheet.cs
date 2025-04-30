@@ -9,18 +9,20 @@ namespace Battle_Cats_Ultimate_Test.Graphics
 {
     struct ImageCut
     {
-        int Id;
         Rectangle Area;
         string Name;
-        public ImageCut(int id, int[] RectArray, string name)
+        public ImageCut(int[] RectArray, string name)
         {
-            Id = id;
             Area = new(RectArray[0], RectArray[1], RectArray[2], RectArray[3]);
             Name = name;
         }
-        public static ImageCut Default(int id)
+        public static ImageCut Default()
         {
-            return new ImageCut(id, new int[] { 0, 0, 1, 1 }, "Default");
+            return new ImageCut(new int[] { 0, 0, 1, 1 }, "Default");
+        }
+        public ImageCut DeepCopy()
+        {
+            return new ImageCut(new int[] { Area.X, Area.Y, Area.Width, Area.Height }, (string)Name.Clone());
         }
     }
     class ImageCutSheet
@@ -46,7 +48,8 @@ namespace Battle_Cats_Ultimate_Test.Graphics
             {
                 //There's an awful lot of skipping lines that's going on here.
                 for(int silly = 0; silly < 2; silly++) { sr.ReadLine(); }
-                imgCutSheet.Name = sr.ReadLine().Trim();
+                string? line = sr.ReadLine().Trim();
+                imgCutSheet.Name = line == null ? "" : line;
                 sr.ReadLine();
                 while(!sr.EndOfStream)
                 {
@@ -58,12 +61,18 @@ namespace Battle_Cats_Ultimate_Test.Graphics
                     }
                     //Bc I don't know how C# handles comma separators that lead to nothing, this is a failsafe to ensure there's always a value.
                     string name = constructors.Length > 4 ? constructors[4] : "";
-                    imgCutSheet.Cuts.Add(new ImageCut(imgCutSheet.Cuts.Count, ints, name));
+                    imgCutSheet.Cuts.Add(new ImageCut(ints, name));
                 }
             }
             return imgCutSheet;
         }
-
+        public ImageCutSheet DeepCopy()
+        {
+            ImageCutSheet ImgCutSheet = new ImageCutSheet((Image)SpriteSheet.Clone());
+            ImgCutSheet.Cuts = [];
+            foreach(ImageCut i in Cuts) { ImgCutSheet.Cuts.Add(i.DeepCopy()); }
+            return ImgCutSheet;
+        }
         public void DrawPart(Vector2 Position, Vector2 Pivot, Vector2 Scale, double opacity, bool Glow)
         {
 

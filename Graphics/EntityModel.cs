@@ -12,6 +12,7 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         public int PartId;
         public int ParentId;
         public int SpriteId;
+        public List<int> ChildrenIds;
         public int ZOrder;
         public Vector2 Position;
         public Vector2 Pivot;
@@ -20,6 +21,7 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         public float Opacity;
         public bool Glows;
         public string Name;
+
         public static ModelPart Default(int id)
         {
             int[] Standard = {id, 0, 0, 0, 0, 0, 0, 0, 1000, 1000, 0, 1000, 0};
@@ -41,10 +43,12 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         }
         public ModelPart DeepCopy()
         {
-            int[] Transfer = {PartId, ParentId, SpriteId, ZOrder,
+            int[] Transfer = { PartId, ParentId, SpriteId, ZOrder,
                 (int)Position.X, (int)Position.Y, (int)Pivot.X, (int)Pivot.Y,
-                (int)Scale.X, (int)Scale.Y, (int)Angle, (int)Opacity, Glows ? 1 : 0};
-            return new ModelPart(Transfer, Name);
+                (int)Scale.X, (int)Scale.Y, (int)Angle, (int)Opacity, Glows ? 1 : 0 };
+            ModelPart copy = new ModelPart(Transfer, Name);
+            copy.ChildrenIds = [..ChildrenIds];//Today, April 29th 2025, I learned of the Range Operator. Cool.
+            return copy;
         }
         public static ModelPart FromFileLine(string argument)
         {
@@ -62,8 +66,10 @@ namespace Battle_Cats_Ultimate_Test.Graphics
     }
     public class EntityModel
     {
+        static string[] DefaultAnims = ["Walk", "Idle", "Attack", "KnockBack"];
         List<ModelPart> Parts;
         List<int> DrawOrder;
+        Dictionary<string, EntityAnimation> Anims;
         ImageCutSheet SpriteSheet;
         int[] Standards;
         private EntityModel()
@@ -76,6 +82,12 @@ namespace Battle_Cats_Ultimate_Test.Graphics
         {
             EntityModel model = new EntityModel();
             model.SpriteSheet = ImageCutSheet.CreateImageCutSheet();
+            foreach(string def in DefaultAnims)
+            {
+                EntityAnimation newAnim = EntityAnimation.NewAnimation();
+                newAnim.AnimName = def;
+                model.Anims.Add(def, newAnim);
+            }
             return model;
         }
         public static EntityModel FromFile(string Path)
@@ -100,6 +112,25 @@ namespace Battle_Cats_Ultimate_Test.Graphics
                 }
             }
             return model;
+        }
+        public EntityModel DeepCopy()
+        {
+            EntityModel newModel = new EntityModel();
+            newModel.SpriteSheet = SpriteSheet.DeepCopy();
+
+            newModel.Parts = [];
+            foreach(ModelPart i in Parts) { newModel.Parts.Add(i.DeepCopy()); }
+
+            newModel.Standards = [];
+            for(int i = 0; i < Standards.Length; i++) { newModel.Standards[i] = Standards[i]; }
+
+            newModel.DrawOrder = [];
+            foreach(int i in DrawOrder) { newModel.DrawOrder.Add(i); }
+
+            newModel.Anims = new Dictionary<string, EntityAnimation>();
+            foreach (KeyValuePair<string, EntityAnimation> anim in Anims) { newModel.Anims.Add(anim.Key, anim.Value.DeepCopy()); }
+
+            return newModel;
         }
         public void AddPart()
         {

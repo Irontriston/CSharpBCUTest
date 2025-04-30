@@ -8,38 +8,50 @@ using System.Threading.Tasks;
 namespace Battle_Cats_Ultimate_Test.Blueprints
 {
     //This will take the role of the foundational blueprint for enemies and units.
-    public class FormBlueprint
+    public class FormBlueprint : OtherBlueprints
     {
         int EntityId;
         string Name;
         string Description;
-        //int Position;
         int MinimumPosition;
-        int Health;
         int MaxHealth;
         int HitBacks;
+        int Price;
+        int RespawnTime;
+        int SpawnLimit;
         Vector2 Layer;
-        int CapacityUsage;
+        int SpawnCapWeight;
         int MovementSpeed;
-        int TargetWidth;
+        int TargetWidth; //Bc the actual hitbox is more of a hit'point', this only affects targeting.
         int TimeBetweenAttacks;
         int StandingRange;
         int AttackBaseRange;
         List<AttackBlueprint> Attacks;
-
+        bool BlocksWaves, CommonProc;
+        Dictionary<string, int> AffectModifiers;
+        List<Traits> SelfTraits;
+        List<Traits> TargetTraits;
+        List<SubTraits> SelfSubTraits;
+        
         public FormBlueprint()
         {
             Name = "";
             Description = "";
-            Health = MaxHealth = 200;
+            MaxHealth = 200;
             HitBacks = 4;
+            RespawnTime = 120;
+            SpawnLimit = -1;
             MovementSpeed = 6;
-            CapacityUsage = 1;
-            Layer = Vector2.Zero;
+            SpawnCapWeight = 1;
+            Layer = new Vector2(0, 9);
             MinimumPosition = 200;
             TimeBetweenAttacks = 0;
             StandingRange = AttackBaseRange = 0;
             Attacks = [new AttackBlueprint()];
+            BlocksWaves = false;
+            CommonProc = false;
+            SelfTraits = new List<Traits>();
+            SelfSubTraits = new List<SubTraits>();
         }
     }
 }

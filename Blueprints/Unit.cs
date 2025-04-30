@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Battle_Cats_Ultimate_Test.Blueprints
 {
-    public enum TalentOrbTypes
+    
+    public enum TalentOrbType
     {
         Attack = 1,
         Defense = 2,
@@ -15,7 +16,7 @@ namespace Battle_Cats_Ultimate_Test.Blueprints
         Resist = 4,
         Massive = 5
     }
-    public enum RarityTypes
+    public enum RarityType
     {
         Normal = 0,
         EX = 1,
@@ -26,9 +27,9 @@ namespace Battle_Cats_Ultimate_Test.Blueprints
     }
     public struct TalentOrb
     {
-        byte type;
+        TalentOrbType type;
         byte grade;
-        public TalentOrb(byte type, byte grade)
+        public TalentOrb(TalentOrbType type, byte grade)
         {
             this.type = type;
             this.grade = grade;
@@ -38,10 +39,11 @@ namespace Battle_Cats_Ultimate_Test.Blueprints
     {
         //Handles both regular and + levels.
         public Vector2 Level;
+        public Vector2 MaxLevel;
         public byte[] LevelCurve;
-        public byte Rarity;
+        public RarityType Rarity;
         public string Name;
-        public List<UnitFormBlueprint> Forms;
+        public List<FormBlueprint> Forms;
 
 
     }
